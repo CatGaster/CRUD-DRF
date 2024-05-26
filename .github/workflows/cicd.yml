@@ -7,42 +7,33 @@ on:
 
 jobs:
   tests:
-      runs-on: ubuntu-20.04
-      env:
-        SECRET: ${{ secrets.SECRET_KEY }}
-        HOST: ${{ secrets.ALLOWED_HOSTS }}
-        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        DB_NAME: ${{ secrets.DB_NAME }}
-        DB_USER: ${{ secrets.DB_USER }}
-      services:
-          postgres_main:
-            image: postgres:12
-            env:
-              POSTGRES_DB: ${{ env.DB_NAME }}
-              POSTGRES_USER:  ${{ env.DB_USER }}
-              POSTGRES_PASSWORD:  ${{ env.DB_PASSWORD }}
-            ports:
-                - 5432:5432
-            options:
-              --health-cmd pg_isready
-              --health-interval 5s
-              --health-timeout 5s
-              --health-retries 5s
-      steps:
-        - name: Проверяем репозиторий на наличие изменений
-          uses: actions/checkout@v4
-        - name: Установка Python
-          uses: actions/setup-python@v5 
-          with:
-            python-version: "3.10"
-        - name: Установка зависимостей
-          run: pip install -r  requirements.txt
-        - name: Тестирование
-          run: python manage.py test
-          env:
-            SECRET_KEY: ${{ env.SECRET }}
-            ALLOWED_HOSTS: ${{ env.HOST }}
-            DB_USER: ${{ env.DB_USER }}
-            DB_PASSWORD: ${{ env.DB_PASSWORD }}
-            DB_NAME: ${{ env.DB_NAME }}
-          
+    runs-on: ubuntu-20.04
+    env:
+      SECRET: ${{ secrets.SECRET_KEY }}
+      HOSTS: ${{ secrets.ALLOWED_HOSTS }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+    services:
+      postgres_main:
+        image: postgres:12
+        env:
+          POSTGRES_DB: ${{ env.DB_NAME }}
+          POSTGRES_USER: ${{ env.DB_USER }}
+          POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
+        ports:
+          - 5432:5432
+        options:
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Проверяем репозиторий на наличие изменений
+        uses: actions/checkout@v4
+      - name: Установка python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Установка зависимостей
+        run: pip install -r requirements.txt
