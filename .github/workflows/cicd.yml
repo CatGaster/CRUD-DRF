@@ -34,7 +34,7 @@ jobs:
         - name: Установка Python
           uses: action/setup-python@v5 
           with:
-            python-version: "3.12"
+            python-version: "3.10"
         - name: Установка зависимостей
           run: pip install -r  requirements.txt
         - name: Тестирование
