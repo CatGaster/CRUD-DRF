@@ -1,0 +1,40 @@
+name: Автоматизация развёртки
+
+on:
+  push:
+      branches:
+              - main
+
+jobs:
+  tests:
+      runs-on: ubuntu-latest
+      env:
+        SECRET: ${{ secrets.SECRET_KEY }}
+        HOST: ${{ secrets.ALLOWED_HOSTS }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        DB_NAME: ${{ secrets.DB_NAME }}
+        DB_USER: ${{ secrets.DB_USER }}
+      services:
+          postgres_main:
+            image: postgres:13
+            env:
+              POSTGRES_DB: ${{env.DB_NAME}}
+              POSTGRES_USER:  ${{env.DB_USER}}
+              POSTGRES_PASSWORD:  ${{env.DB_PASSWORD}}
+            ports:
+                - 5432:5432
+            options:
+              --health-cmd pg_isready
+              --health-interval 5s
+              --health-timeout 5s
+              --health-retries 5s
+      steps:
+        - name: Проверяем репозиторий на наличие изменений
+          uses: action/checkout@v4
+        - name: Установка Python
+          uses: action/setup-python@v5 
+          with:
+            python-version: "3.12"
+        - name: Установка зависимостей
+          run pip install -r requirements.txt
+
