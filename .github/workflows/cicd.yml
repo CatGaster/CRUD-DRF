@@ -41,7 +41,7 @@ jobs:
           run: python manage.py test
           env:
             SECRET_KEY: ${{ env.SECRET }}
-            ALLOWED_HOSTS: ${{ HOST }}
+            ALLOWED_HOSTS: ${{ env.HOST }}
             DB_USER: ${{ env.DB_USER }}
             DB_PASSWORD: ${{ env.DB_PASSWORD }}
             DB_NAME: ${{ env.DB_NAME }}
